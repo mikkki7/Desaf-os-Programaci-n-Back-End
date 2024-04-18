@@ -62,7 +62,7 @@ class ProductManager {
     async updateProduct(id, updateField) {
         let foundIdProduct = this.products.findIndex((product) => product.id === id);
         if (foundIdProduct !== -1) {
-            let updatedProduct = {...this.products[foundIdProduct], ...updatedProduct};
+            let updatedProduct = {...this.products[foundIdProduct], ...updateField};
             
             this.products[foundIdProduct] = updatedProduct;
 
