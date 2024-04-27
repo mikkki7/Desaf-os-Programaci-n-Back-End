@@ -1,9 +1,9 @@
 import express from 'express';
-import ProductManager from './productManager';
+import ProductManager from './productManager.js';
 
 const port = 3000;
 const app = express();
-const newProduct = new ProductManager("./products.json")
+const newProduct = new ProductManager("./src/products.json")
 
 app.get("/products", async (req, resp) => {
     let limit = parseInt(req.query.limit) || 0;

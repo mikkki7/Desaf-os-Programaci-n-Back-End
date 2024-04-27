@@ -25,7 +25,7 @@ class productManager {
     async getProducts(limit) {
         let products = await fs.promises.readFile(this.file, "UTF-8");
         let parsedProducts = await JSON.parse(products);
-        this.products = parsed.products;
+        this.products = products;
 
         return limit === 0 ? parsedProducts : parsedProducts.slice(0, limit);
     }
