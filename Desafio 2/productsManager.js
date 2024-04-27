@@ -8,8 +8,9 @@ class ProductManager {
         this.id = 1;
     }
 
-    async addProduct(product) {
+    async addProduct(title, description, price, thumnail, code, stock) {
         let newProduct = {
+            id: this.id++,
             title: title,
             description: description,
             price : price,
@@ -18,10 +19,9 @@ class ProductManager {
             stock: stock
         }
 
-        let isDuplicate = this.products.some((product) => product.code === product.code)
+        let isDuplicate = this.products.some((product) => product.code === code)
 
         if (newProduct && !isDuplicate) {
-            id = id++;
             this.products.push(product);
             
             let data = JSON.stringify(this.products, null);
@@ -53,7 +53,7 @@ class ProductManager {
         let foundProduct = this.products.find((product) => product.id === id);
         if (foundProduct) {
             console.log(`Producto encontrado ${product}`);
-            return product;
+            return foundProduct;
         } else {
             console.error(`No se ha encontrado el producto que coincida con el id ${id}`)
         }
@@ -105,3 +105,31 @@ class ProductManager {
         }
     }
 }
+
+const PM = new ProductManager();
+
+console.log("Productos iniciales: ", PM.getProducts());
+
+PM.addProduct(
+    "Titulo 3",
+    "Descripcion 3",
+    750,
+    "/imagen.jpg",
+    "CCC003",
+    150
+);
+
+PM.addProduct(
+    "Titulo 4",
+    "Descripcion 4",
+    1000,
+    "/imagen.jpg",
+    "CCC0004",
+    200
+);
+
+console.log(PM.getProducts(), "Productos agregados con exito");
+
+console.log(PM.getProductById(1));
+
+console.log(PM.getProductById(4));
