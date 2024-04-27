@@ -49,8 +49,8 @@ PM.addProduct(
 );
 
 PM.addProduct(
-    "",
-    "",
+    "Titulo 2",
+    "Descripcion 2",
     500,
     "/img.jpg",
     "CCC002",
