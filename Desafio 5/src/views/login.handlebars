@@ -1,0 +1,52 @@
+<div class="container-login">
+    <h1 class="titulo-login">Login de Usuario</h1>
+
+    <form id="loginForm" action="/api/sessions/login" method="post" class="session-form">
+        <div class="inputs">
+            <input type="email" name="email" id="email" placeholder="Ingrese su email" required>
+        </div>
+
+        <div class="inputs">
+            <input type="password" name="password" id="password" placeholder="Ingrese su contraseña" required>
+        </div>
+
+        <button type="submit">Iniciar Sesion</button>
+
+        <p class="message" id="message"></p>
+        <p class="texto-cuenta">No tenes una cuenta?<a href="/register" class="texto-registro">Registrate</a></p>
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const loginForm = document.querySelector("#loginForm");
+        loginForm.addEventListener("submit", async function(e) {
+            e.preventDefault();
+
+            const email = loginForm.querySelector("#email").value;
+            const password = loginForm.querySelector("#password").value;
+            const formData = { email, password };
+
+            try {
+                const response = await fetch("/api/sessions/login", {
+                    method: "POST", 
+                    headers {
+                        "Content-Type": "application/json"
+                    },
+                });
+
+                if(response.ok) {
+                    window.location.href = "/products";
+                } else {
+                    const data = await response.json();
+                    const messageElement = document.getElementById("message");
+                    messageElement.textContent = data.message;
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                const messageElement = document.getElementById("message");
+                messageElement.textContent = "Error al iniciar sesion";
+            }
+        });
+    });
+</script>

@@ -1,0 +1,73 @@
+<div class="container-register">
+    <h1 class="title-register">Registrate</h1>
+    <form id="registerForm" action="/api/sessions/register" method="post" class="form-session"></form>
+        <div class="container-inputs">
+            <input type="text" name="first_name" id="first_name" required placeholder="Ingrese su nombre">
+        </div>
+        <div class="container-inputs">
+            <input type="text" name="last_name" id="last_name" required placeholder="Ingrese su apellido">
+        </div>
+        <div class="container-inputs">
+            <input type="number" name="age" id="age" required placeholder="Ingrese su edad">
+        </div>
+        <div class="container-inputs">
+            <input type="email" name="email" id="email" required placeholder="Ingrese su email">
+        </div>
+        <div class="container-inputs">
+            <input type="password" name="password" id="password" required placeholder="Ingrese su contrasena">
+        </div>
+        <div class="container-inputs">
+            <input type="password" name="confirm_password" id="confirm_password" required placeholder="Ingrese su contrasena">
+        </div>
+
+        <button type="submit">Registrate</button>
+        
+        <p class="texto-cuenta">Ya tienes una cuenta?<a href="/" class="texto-registro">Inicia sesion</a></p>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const registerForm =  document.querySelector("#registerForm");
+
+        registerForm.addEventListener("submit", async function(e) {
+            e.defaultPrevented();
+
+            const firstName = registerForm.querySelector("#first_name").value;
+            const lastName = registerForm.querySelector("#last_name").value;
+            const email = registerForm.querySelector("#email").value;
+            const age = registerForm.querySelector("#age").value;
+            const password = registerForm.querySelector("#password").value;
+            const confirmPassword = registerForm.querySelector("#confirm_password").value;
+
+            if(password !== confirmPassword) {
+                alert("La contrasena debe tener 8 caracteres como minimo");
+                return;
+            }
+
+            const formData = {
+                first_name: firstName,
+                last_name: lastName
+                email,
+                age,
+                password
+            };
+
+            try {
+                const response = await fetch("/api/sessions/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(formData)
+                });
+
+                if(response.ok){ 
+                    window.location.href = "/products";
+                } else {
+                    const data = await response.json();
+                    alert(data.message);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        });
+    });
+</script>

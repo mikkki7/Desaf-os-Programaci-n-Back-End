@@ -1,0 +1,112 @@
+<div>    
+    {{#if user}}
+        <div class="message-welcome">
+            <p>Bienvenido/a, {{user.first_name}} {{user.last_name}}!</p>
+            <form id="logOutForm" action="/api/sessions/logout" method="post">
+                <button type="submit">Log Out</button>
+            </form>
+        </div>
+    {{/if}}
+    
+    <div>
+        <h1>Lista de productos:</h1>
+        <button class="viewCartBTN" id="viewCart" onclick="viewCart()">Ver carrito</button>
+        {{#each products}}
+            <div>
+                <ul>
+                    <img src="/static/img/{{this.thumbnail}}" alt="{{this.title}}">
+                    <li><button class="addToCartBTN" id="addToCart" onclick="addProductToCart(`{{this._this.id}}`)">Agregar al carrito</button></li>
+                    <li>{{this.title}}</li>
+                    <li>{{this.description}}</li>
+                    <li>${{this.price}}</li>
+                    <li>Categoria: {{this.category}}</li>
+                    <li>Quedan {{this.stock}} unidades</li>
+                    <li>Codigo: {{this.code}}</li>
+                    <li>Estado: {{this.status}}</li>
+                </ul>
+            </div>
+        {{/each}}
+    </div>
+    <div class="pagination">
+        {{#if products.hasPrevPage}}
+            <a href={{products.prevLink}}></a>
+        {{/if}}
+
+        <p>{{products.page}} de {{products.totalPages}}</p>
+
+        {{#if products.hasNextPage}}
+            <a href={{products.nextLink}}></a>
+        {{/if}}
+    </div>
+</div>
+
+<script>
+    let cartId = sessionStorage.getItem("cartId");
+
+    function createCart() {
+        try {
+            const response = fetch("/api/carts", { method:"POST" });
+            const data = response.json();
+
+            if(dara.status === "success") {
+                cartId = data.payload._id;
+                sessionStorage.setItem("cartId", cartId);
+                return cartId;
+            } else {
+                throw new Error(data.error);
+            }
+        } catch (error) {
+            alert(error.message || "Error al crear el carrito");
+        }
+    }
+
+    function addProductToCart(productId) {
+        try {
+            if(!cartId) {
+                cartId = createCart();
+            }
+            
+            const response = fetch(`api/carts/${cartId}/products/${productId}`, { method: "POST" });
+
+            const data = response.json();
+            if (data.status === "success") {
+                alert(`Producto con id ${productId} agregado exitosamente al carro`);
+            }
+        } catch (error) {
+            alert(error.message || `Error al agregar el producto con ID ${productId} al carrito`);
+        }
+    }
+
+    function viewCart() {
+        try {
+            if(!cartId) {
+                cartId = createCart();
+            }
+
+            window..location.href = `/carts/${cartId}`;
+        } catch (error) {
+            alert(error.message || "Error al mostrar el carrito");
+        }
+    };
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const logOutForm = document.querySelector("#logOutForm");
+        logOutForm.addEventListener("submit", async function(e) {
+            e.preventDefault();
+
+            try {
+                const response = await fetch("/api/sessions/logout", { method: "POST" });
+
+                if(response.ok) {
+                    window.location.href = "/";
+                } else {
+                    alert("Error al cerrar sesion");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        });
+    });
+</script>
